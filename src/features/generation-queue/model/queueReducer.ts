@@ -14,7 +14,9 @@ export type QueueAction =
   | { type: 'SET_FILTER'; payload: TaskStatus | null }
   | { type: 'SET_SORT'; payload: SortOrder }
   | { type: 'UPDATE_TASK'; payload: Task }
-  | { type: 'CLEAR_COMPLETED' }; 
+  | { type: 'CLEAR_COMPLETED' }
+  | { type: 'REMOVE_TASK'; payload: string }
+  | { type: 'CANCEL_TASK'; payload: string };
 
 export const queueReducer = (state: QueueState, action: QueueAction): QueueState => {
   switch (action.type) {
@@ -29,16 +31,29 @@ export const queueReducer = (state: QueueState, action: QueueAction): QueueState
       const filtered = state.tasks.filter(task => task.status !== 'completed');
       return { ...state, tasks: filtered };
     }
-    // case 'UPDATE_TASK': {
-    //   // Обновляем задачу, затем применяем лимит
-    //   const index = state.tasks.findIndex(t => t.id === action.payload.id);
-    //   if (index === -1) return state;
-    //   const newTasks = [...state.tasks];
-    //   newTasks[index] = action.payload;
-    //   // Применяем лимит
-    //   const limitedTasks = enforceQueueLimit(newTasks);
-    //   return { ...state, tasks: limitedTasks };
-    // }
+    case 'REMOVE_TASK': {
+      return { ...state, tasks: state.tasks.filter(task => task.id !== action.payload) };
+    }
+    case 'CANCEL_TASK': {
+      const index = state.tasks.findIndex(t => t.id === action.payload);
+      if (index === -1) return state;
+      const newTasks = [...state.tasks];
+      newTasks[index] = { 
+        ...newTasks[index], 
+        status: 'cancelled', 
+        progress: 0, 
+        estimatedTime: null,
+        cost: 0
+      };
+      return { ...state, tasks: newTasks };
+    }
+    case 'UPDATE_TASK': {
+      const index = state.tasks.findIndex(t => t.id === action.payload.id);
+      if (index === -1) return state;
+      const newTasks = [...state.tasks];
+      newTasks[index] = action.payload;
+      return { ...state, tasks: newTasks };
+    }
     default:
       return state;
   }

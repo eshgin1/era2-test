@@ -6,6 +6,7 @@ const statusPriority: Record<TaskStatus, number> = {
   queued: 1,
   completed: 2,
   error: 3,
+  cancelled: 4
 };
 
 export const selectCounts = (tasks: Task[]) => {

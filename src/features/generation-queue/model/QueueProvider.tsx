@@ -7,7 +7,9 @@ interface QueueContextValue extends QueueState {
   setFilter: (status: TaskStatus | null) => void;
   setSort: (order: SortOrder) => void;
   clearCompleted: () => void; 
-//   updateTask: (task: Task) => void;
+  removeTask: (id: string) => void;
+  cancelTask: (id: string) => void;
+  updateTask: (task: Task) => void;
 }
 
 const QueueContext = createContext<QueueContextValue | undefined>(undefined);
@@ -33,16 +35,26 @@ export const QueueProvider = ({ children }: { children: ReactNode }) => {
     dispatch({ type: 'CLEAR_COMPLETED' });
   };
 
-//   const updateTask = (task: Task) => {
-//     dispatch({ type: 'UPDATE_TASK', payload: task });
-//   };
+  const removeTask = (id: string) => {
+    dispatch({ type: 'REMOVE_TASK', payload: id });
+   };
+   
+   const cancelTask = (id: string) => {
+    dispatch({ type: 'CANCEL_TASK', payload: id });
+  };
+
+  const updateTask = (task: Task) => {
+    dispatch({ type: 'UPDATE_TASK', payload: task });
+  };
 
   const value: QueueContextValue = {
     ...state,
     setFilter,
     setSort,
     clearCompleted,
-    // updateTask,
+    removeTask,
+    cancelTask,
+    updateTask,
   };
 
   return <QueueContext.Provider value={value}>{children}</QueueContext.Provider>;

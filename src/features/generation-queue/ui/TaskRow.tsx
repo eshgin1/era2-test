@@ -2,12 +2,15 @@ import { motion } from 'framer-motion';
 import { Card } from '@/shared/ui/card';
 import { Ellipsis, X, ArrowDownToLine, RefreshCw } from 'lucide-react';
 import { Task, TaskStatus } from '@/entities/generation-task/model/types';
+import { useEffect, useRef, useState } from 'react';
+import { useQueue } from '../model/useQueue';
 
 const statusStyles: Record<TaskStatus, { background: string; color: string }> = {
   queued: { background: 'var(--color-secondary)', color: 'var(--c-fg-mute)' },
   inProgress: { background: 'var(--c-accent-soft)', color: 'var(--c-accent-2)' },
   completed: { background: '#10B98122', color: '#34D399' },
   error: { background: '#FF5A5A1F', color: '#FF6B6B' },
+  cancelled: { background: '#6B728022', color: 'var(--c-fg-mute)'},
 };
 
 const actionIcons: Record<TaskStatus, React.ReactNode> = {
@@ -15,6 +18,7 @@ const actionIcons: Record<TaskStatus, React.ReactNode> = {
   inProgress: <X size={14} color="var(--c-fg-mute)" />,
   completed: <ArrowDownToLine color="hsl(var(--primary))" size={14} />,
   error: <RefreshCw color="hsl(var(--primary))" size={14} />,
+  cancelled: <RefreshCw color="hsl(var(--primary))" size={14} />
 };
 
 interface TaskRowProps {
@@ -22,6 +26,47 @@ interface TaskRowProps {
 }
 
 export const TaskRow = ({ task }: TaskRowProps) => {
+  const { tasks, updateTask, removeTask, cancelTask } = useQueue();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLDivElement>(null);
+
+  const handleDelete = () => {
+    removeTask(task.id);
+    setIsMenuOpen(false);
+  };
+
+  const handleActionClick = () => {
+    // Если статус queued или inProgress – отменяем
+    if (task.status === 'queued' || task.status === 'inProgress') {
+      cancelTask(task.id);
+      return;
+    }
+
+    if (task.status === 'error' || task.status === 'cancelled') {
+      const inProgressCount = tasks.filter(t => t.status === 'inProgress').length;
+      const newStatus: TaskStatus = inProgressCount < 2 ? 'inProgress' : 'queued';
+      const updatedTask: Task = { ...task, status: newStatus, progress: 0 };
+      updateTask(updatedTask);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+  
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -71,12 +116,31 @@ export const TaskRow = ({ task }: TaskRowProps) => {
         >
           {task.status}
         </div>
-        <Card className="flex justify-center items-center h-[32px] w-[32px] rounded-[8px]">
+        <Card 
+          onClick={handleActionClick}
+          className="flex justify-center items-center h-[32px] w-[32px] rounded-[8px]">
           {actionIcons[task.status]}
         </Card>
-        <Card className="flex justify-center items-center h-[32px] w-[32px] rounded-[8px]">
-          <Ellipsis color="var(--c-fg-mute)" size={14} />
-        </Card>
+        <div className="relative" ref={buttonRef}>
+          <Card className="flex justify-center items-center h-[32px] w-[32px] rounded-[8px]"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Ellipsis color="var(--c-fg-mute)" size={14} />
+          </Card>
+          {isMenuOpen && (
+            <div
+              ref={menuRef}
+              className="absolute right-0 top-full mt-1 rounded-md border bg-popover shadow-md z-50 py-1"
+              style={{ background: 'hsl(var(--popover))', borderColor: 'hsl(var(--border))' }}
+            >
+              <button
+                onClick={handleDelete}
+                className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-secondary transition-colors text-left text-destructive"
+              >
+                Удалить
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

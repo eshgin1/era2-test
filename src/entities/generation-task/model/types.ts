@@ -1,6 +1,6 @@
 import { LucideIcon } from "lucide-react";
 
-export type TaskStatus = 'queued' | 'inProgress' | 'completed' | 'error';
+export type TaskStatus = 'queued' | 'inProgress' | 'completed' | 'error' | 'cancelled';
 
 export interface Task {  
   id: string;

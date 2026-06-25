@@ -2,6 +2,7 @@ import React, { createContext, useReducer, ReactNode } from 'react';
 import { queueReducer, QueueState, SortOrder } from './queueReducer';
 import { TaskStatus, Task } from '@/entities/generation-task/model/types';
 import { initialTasks } from '@/entities/generation-task/model/seet';
+import { selectSortedAllTasks } from './selectors';
 
 interface QueueContextValue extends QueueState {
   setFilter: (status: TaskStatus | null) => void;
@@ -10,6 +11,7 @@ interface QueueContextValue extends QueueState {
   removeTask: (id: string) => void;
   cancelTask: (id: string) => void;
   updateTask: (task: Task) => void;
+  getTaskPosition: (id: string) => number;
 }
 
 const QueueContext = createContext<QueueContextValue | undefined>(undefined);
@@ -46,6 +48,15 @@ export const QueueProvider = ({ children }: { children: ReactNode }) => {
   const updateTask = (task: Task) => {
     dispatch({ type: 'UPDATE_TASK', payload: task });
   };
+  
+  const getTaskPosition = (taskId: string): number => {
+    const sorted = selectSortedAllTasks(state);
+    const inProgressCount = state.tasks.filter(t => t.status === 'inProgress').length;
+    const queuedTasks = sorted.filter(t => t.status === 'queued');
+    const index = queuedTasks.findIndex(t => t.id === taskId);
+    if (index === -1) return -1;
+    return inProgressCount + index + 1;
+  };
 
   const value: QueueContextValue = {
     ...state,
@@ -55,6 +66,7 @@ export const QueueProvider = ({ children }: { children: ReactNode }) => {
     removeTask,
     cancelTask,
     updateTask,
+    getTaskPosition
   };
 
   return <QueueContext.Provider value={value}>{children}</QueueContext.Provider>;

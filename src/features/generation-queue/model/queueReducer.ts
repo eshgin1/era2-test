@@ -1,5 +1,4 @@
 import { Task, TaskStatus } from '@/entities/generation-task/model/types';
-import { enforceQueueLimit } from './queueEngine';
 
 export type SortOrder = 'newest' | 'oldest';
 
@@ -43,7 +42,6 @@ export const queueReducer = (state: QueueState, action: QueueAction): QueueState
         status: 'cancelled', 
         progress: 0, 
         estimatedTime: null,
-        cost: 0
       };
       return { ...state, tasks: newTasks };
     }

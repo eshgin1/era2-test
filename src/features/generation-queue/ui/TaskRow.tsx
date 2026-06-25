@@ -4,6 +4,8 @@ import { Ellipsis, X, ArrowDownToLine, RefreshCw } from 'lucide-react';
 import { Task, TaskStatus } from '@/entities/generation-task/model/types';
 import { useEffect, useRef, useState } from 'react';
 import { useQueue } from '../model/useQueue';
+import { cn } from '@/shared/lib/utils';
+import { formatEta } from '../lib/formatEta';
 
 const statusStyles: Record<TaskStatus, { background: string; color: string }> = {
   queued: { background: 'var(--color-secondary)', color: 'var(--c-fg-mute)' },
@@ -26,7 +28,7 @@ interface TaskRowProps {
 }
 
 export const TaskRow = ({ task }: TaskRowProps) => {
-  const { tasks, updateTask, removeTask, cancelTask } = useQueue();
+  const { tasks, updateTask, removeTask, cancelTask, getTaskPosition } = useQueue();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -52,6 +54,49 @@ export const TaskRow = ({ task }: TaskRowProps) => {
     }
   };
 
+  const renderInfo = () => {
+    switch (task.status) {
+      case 'inProgress':
+        return (
+          <>
+            <span>≈</span>
+            <span>{formatEta(task.estimatedTime)}</span>
+            {/* <span>{task.estimatedTime !== null ? `${task.estimatedTime} сек` : '…'}</span> */}
+            <span>•</span>
+            <span>{task.cost} cr</span>
+          </>
+        );
+      case 'queued':
+        return (
+          <>
+            <span>Позиция в очереди {getTaskPosition(task.id)}</span>
+          </>
+        );
+      case 'completed':
+        return (
+          <>
+            <span>Готово за {task.estimatedTime}</span>
+            <span>•</span>
+            <span>{task.cost} cr</span>
+          </>
+        );
+      case 'error':
+        return (
+          <>
+            <span>Недостаточно кредитов</span>
+          </>
+        );
+      case 'cancelled':
+        return (
+          <>
+            <span>Отменено пользователем</span>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -66,12 +111,17 @@ export const TaskRow = ({ task }: TaskRowProps) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="border border-border rounded-[14px] p-4 cursor-pointer hover:border-primary/30 hover:shadow-sm transition-all flex items-start gap-3 group bg-card"
+      className={cn(
+        "rounded-[14px] p-4 cursor-pointer hover:shadow-sm transition-all flex items-start gap-3 group bg-card",
+        task.status === 'inProgress' 
+          ? "border-2 border-accent/70 hover:border-accent" 
+          : "border border-border hover:border-primary/30"
+      )}
     >
       <div
         className="w-9 h-9 rounded-[8px] flex items-center justify-center flex-shrink-0 transition-colors group-hover:bg-[hsl(var(--primary))/0.18]"
@@ -88,9 +138,7 @@ export const TaskRow = ({ task }: TaskRowProps) => {
           <span className="w-1.5 h-1.5 rounded-full bg-primary" style={{ boxShadow: '0 0 8px var(--c-accent)' }} />
           <span>{task.model}</span>
           <span>•</span>
-          <span>{task.estimatedTime}</span>
-          <span>·</span>
-          <span>{task.cost}</span>
+          {renderInfo()}
         </div>
         {task.status === 'inProgress' && (
           <div className="space-y-0.5 pt-0.5">

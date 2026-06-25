@@ -36,3 +36,15 @@ export const selectFilteredTasks = (state: QueueState) => {
     }
   });
 };
+
+export const selectSortedAllTasks = (state: QueueState) => {
+  return [...state.tasks].sort((a, b) => {
+    const statusDiff = statusPriority[a.status] - statusPriority[b.status];
+    if (statusDiff !== 0) return statusDiff;
+    if (state.sortOrder === 'newest') {
+      return b.createdAt - a.createdAt;
+    } else {
+      return a.createdAt - b.createdAt;
+    }
+  });
+};

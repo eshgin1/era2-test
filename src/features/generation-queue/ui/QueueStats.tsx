@@ -13,7 +13,7 @@ interface QueueStatsProps {
 
 export const QueueStats = ({ counts }: QueueStatsProps) => {
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
       {statusBlocks.map((block) => (
         <div
           key={block.key}

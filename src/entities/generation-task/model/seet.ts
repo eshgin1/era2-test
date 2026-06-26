@@ -1,12 +1,11 @@
 import { Task } from './types';
-import { Circle, MessageSquareMore, Play, Music } from 'lucide-react';
 
 export const initialTasks: Task[] = [
   {
     id: '1',
-    Icon: Circle,
     title: 'Неоновый киберпанк-город под дождём, вид сверху',
     model: 'Midjourney v6',
+    type: 'text',
     estimatedTime: 30,
     cost: 80,
     status: 'inProgress',
@@ -15,9 +14,9 @@ export const initialTasks: Task[] = [
   },
   {
     id: '2',
-    Icon: Circle,
     title: 'Дрон-облёт горного озера на рассвете, 5 сек',
     model: 'Kling 3.0',
+    type: 'video',
     estimatedTime: 120,
     cost: 150,
     status: 'inProgress',
@@ -27,7 +26,7 @@ export const initialTasks: Task[] = [
   {
     id: '3',
     title: 'Сценарий рекламного ролика для кофейни, 30 секунд',
-    Icon: MessageSquareMore,
+    type: 'audio',
     model: 'GPT-4o',
     estimatedTime: null,
     cost: 6,
@@ -37,9 +36,9 @@ export const initialTasks: Task[] = [
   },
   {
     id: '4',
-    Icon: Play,
     title: 'Минималистичный логотип кофейни, бежевые тона',
     model: 'Flux',
+    type: 'image',
     estimatedTime: 12,
     cost: 80,
     status: 'completed',
@@ -48,9 +47,9 @@ export const initialTasks: Task[] = [
   },
   {
     id: '5',
-    Icon: Music,
     title: 'Озвучка приветствия мужским голосом',
     model: 'ElevenLabs',
+    type: 'image',
     estimatedTime: 0,
     cost: 20,
     status: 'error',
@@ -59,9 +58,9 @@ export const initialTasks: Task[] = [
   },
   {
     id: '6',
-    Icon: Play,
     title: 'Город будущего ночью, неоновые огни',
     model: 'Runway',
+    type: 'text',
     estimatedTime: 0,
     cost: 6,
     status: 'queued',
@@ -70,9 +69,9 @@ export const initialTasks: Task[] = [
   },
   {
     id: '7',
-    Icon: Circle,
     title: 'Постер в стиле ретро-футуризм 80-х',
     model: 'Seedream',
+    type: 'video',
     estimatedTime: 0,
     cost: 10,
     status: 'queued',
@@ -81,9 +80,9 @@ export const initialTasks: Task[] = [
   },
   {
     id: '8',
-    Icon: Play,
     title: 'Подводный мир с фантастическими существами',
     model: 'Sora',
+    type: 'text',
     estimatedTime: 0,
     cost: 200,
     status: 'error',

@@ -1,15 +1,15 @@
-import { LucideIcon } from "lucide-react";
-
+export type GenType = 'image' | 'video' | 'audio' | 'text';
 export type TaskStatus = 'queued' | 'inProgress' | 'completed' | 'error' | 'cancelled';
 
-export interface Task {  
+export interface Task {
   id: string;
-  Icon: LucideIcon;
   title: string;
   model: string;
+  type: GenType;
   estimatedTime: number | null;
   cost: number;
   status: TaskStatus;
-  progress: number; 
-  createdAt: number; 
+  progress: number;
+  createdAt: number;
+  errorMessage?: string;
 }

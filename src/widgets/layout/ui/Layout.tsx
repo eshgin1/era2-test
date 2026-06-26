@@ -6,6 +6,8 @@ import { CommandPaletteProvider } from "@/features/command-palette";
 import { useAuth } from "@/features/auth";
 import { useTheme } from "@/features/theme-switcher";
 import { cn } from "@/shared/lib/utils";
+import { StatusBar } from "@/features/generation-queue/ui/StatusBar";
+import { QueueProvider } from "@/features/generation-queue/model/QueueProvider";
 
 const sidebarPages = ["/text", "/design", "/video", "/audio", "/agents", "/toolkit", "/history", "/pricing", "/create", "/queue"];
 const workspacePages = ["/text", "/design", "/video", "/audio", "/create"];
@@ -82,6 +84,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </svg>
         </div>
       </div>
+      <QueueProvider>
+        <div className="fixed bottom-6 right-6 z-[10000]">
+          <StatusBar />
+        </div>
+      </QueueProvider>
     </CommandPaletteProvider>
   );
 }

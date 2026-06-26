@@ -16,11 +16,11 @@ const getTickParams = (task: Task) => {
   switch (type) {
     case 'video':
     case 'audio':
-      return { delayMin: 500, delayMax: 800, stepMin: 1, stepMax: 3 };
+      return { delayMin: 400, delayMax: 600, stepMin: 3, stepMax: 7 };
     case 'image':
     case 'text':
     default:
-      return { delayMin: 300, delayMax: 500, stepMin: 3, stepMax: 7 };
+      return { delayMin: 300, delayMax: 500, stepMin: 5, stepMax: 10 };
   }
 };
 

@@ -3,8 +3,6 @@ import { GenerationQueue } from '@/widgets/generation-queue/ui/GenerationQueue';
 
 export default function QueuePage() {
   return (
-    <QueueProvider>
-      <GenerationQueue />
-    </QueueProvider>
+    <GenerationQueue />
   );
 }

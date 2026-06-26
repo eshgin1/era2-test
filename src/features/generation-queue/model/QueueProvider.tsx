@@ -137,7 +137,7 @@ export const QueueProvider = ({ children }: { children: ReactNode }) => {
   };
   
   useQueueEngine(state.tasks, updateTask);
-  
+
   const value: QueueContextValue = {
     ...state,
     setFilter,
@@ -151,7 +151,6 @@ export const QueueProvider = ({ children }: { children: ReactNode }) => {
     getTaskPosition,
     setSearch
   };
-
   return <QueueContext.Provider value={value}>{children}</QueueContext.Provider>;
 };
 

@@ -30,6 +30,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <CommandPaletteProvider>
+      <QueueProvider>
       <div className="min-h-screen bg-background">
         <Header
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
@@ -84,7 +85,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </svg>
         </div>
       </div>
-      <QueueProvider>
         <div className="fixed bottom-6 right-6 z-[10000]">
           <StatusBar />
         </div>

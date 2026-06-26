@@ -36,8 +36,6 @@ export const StatusBar = () => {
         )
       : 0;
 
-  if (activeTasks.length === 0) return null;
-
   const displayTasks = sorted.slice(0, MAX_DISPLAY);
   const remaining = sorted.length - MAX_DISPLAY;
 
@@ -45,7 +43,6 @@ export const StatusBar = () => {
 
 return (
   <div className="bottom-6 right-6 z-50 w-85 bg-card border border-border rounded-2xl shadow-2xl p-4 transition-all hover:shadow-xl">
-    {/* Заголовок — кликабельный */}
     <div className="cursor-pointer flex justify-between gap-1" onClick={toggleCollapse}>
       <div className="flex flex-col gap-2 justify-between">
         <div className="flex items-center gap-2">
@@ -67,7 +64,6 @@ return (
       )}
     </div>
 
-    {/* Раскрывающийся контент */}
     <AnimatePresence>
       {!isCollapsed && (
         <motion.div
@@ -105,10 +101,8 @@ return (
 );
 };
 
-// Компонент превью задачи
 const TaskPreview = ({ task }: { task: Task }) => {
   const Icon = typeIcons[task.type] || Circle;
-
   return (
     <div className="flex items-center gap-3">
       <div className="w-6 h-6 rounded-md flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/20">

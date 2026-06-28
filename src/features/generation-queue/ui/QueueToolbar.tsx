@@ -144,7 +144,7 @@ export const QueueToolbar = ({
 
           {sortDropdownOpen && (
             <div
-              className="absolute left-0 top-full mt-2 w-44 rounded-[14px] border p-1.5 shadow-2xl"
+              className="absolute left-0 top-full mt-2 w-44 rounded-[14px] border p-1.5 shadow-2xl z-1"
               style={{ background: 'hsl(var(--popover))', borderColor: 'hsl(var(--border))' }}
             >
               <button
@@ -188,7 +188,7 @@ export const QueueToolbar = ({
 
           {typeDropdownOpen && (
             <div
-              className="absolute right-0 top-full mt-2 w-44 rounded-[14px] border p-1.5 shadow-2xl"
+              className="absolute right-0 top-full mt-2 w-44 rounded-[14px] border p-1.5 shadow-2xl z-1"
               style={{ background: 'hsl(var(--popover))', borderColor: 'hsl(var(--border))' }}
             >
               {typeOptions.map((opt) => (
